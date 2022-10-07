@@ -1,5 +1,3 @@
-// rustc -O -C target-cpu=native 72.rs && ./72
-
 // always (L-n)*remaining_numbers
 // 1: 1, 2: 1/2, 3: 2/3, 4: 1/2, 5: 4/5, 6: 1-(1/2+1/3) -> 1/6, 7: 6/7, 8: 1/2, ...
 
@@ -10,22 +8,25 @@
 // 2 * 1/6 == 0.3333333333333333
 // 6/7
 
-const L: u32 = 8;
+use num_bigint::BigInt;
+use num_rational::Ratio;
+
+const L: u32 = 1000;
 
 pub fn main() {
 	let start = std::time::Instant::now();
 
-	let mut found = 0;
-	found += 1*L-1;
+	let mut found = BigInt::from(L-1);
 
 	let mut factors = Vec::new();
+	let one = Ratio::from(BigInt::from(1));
 	for n in 2..=L {
 		prime_factors(n, &mut factors);
-		let mut remaining_numbers_factor = 1f64;
+		let mut remaining_numbers_factor = Ratio::from(BigInt::from(1));
 		for factor in &factors {
-			remaining_numbers_factor -= 1.0 / (*factor as f64);
+			remaining_numbers_factor -= &one / BigInt::from(*factor);
 		}
-		found += f64::ceil((L-n) as f64 * remaining_numbers_factor) as u32;
+		found += (remaining_numbers_factor * BigInt::from(L-n)).ceil().to_integer();
 		factors.clear();
 	}
 	dbg!(L, found, start.elapsed());
