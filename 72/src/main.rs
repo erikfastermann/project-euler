@@ -17,19 +17,23 @@ pub fn main() {
 
 	let start = std::time::Instant::now();
 	let mut found = BigInt::from(l-1);
+	println!("1: {}", l-1);
 
 	let one = Ratio::from(BigInt::from(1));
-	for n in 2..=l {
+	for n in 2..l {
 		let factors = primes::factors_uniq(n.into());
 		let mut remaining_numbers_factor = Ratio::from(BigInt::from(1));
-		for factor in &factors {
-			remaining_numbers_factor -= &one / BigInt::from(*factor);
+		for factor in factors {
+			remaining_numbers_factor -= &one / BigInt::from(factor);
 		}
-		found += (remaining_numbers_factor * BigInt::from(l-n)).ceil().to_integer();
+		println!("{}: {}", n, remaining_numbers_factor);
+		let current = (remaining_numbers_factor * BigInt::from(l-n)).ceil().to_integer();
+		println!("{}: {}", n, &current);
+		found += current;
 	}
 
-	dbg!(l, found, start.elapsed());
-	println!("{}", found);
+	dbg!(l, &found, start.elapsed());
+	println!("{}", &found);
 }
 
 // 2: slow=1 fast=1
