@@ -26,7 +26,7 @@ grid = [
 
 def left_right(grid):
     for row in grid:
-        for i in range(len(row)-4):
+        for i in range(len(row)-3):
             yield math.prod(row[i:i+4])
 
 def diagonal(grid):
